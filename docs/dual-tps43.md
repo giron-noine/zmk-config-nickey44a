@@ -25,7 +25,7 @@ westのrevision、ZMK本体、Azoteqドライバーは変更しない。
 | 1本指で長押し・保持 | 左ボタンを押したまま保持。指を離すと解除 | 長押しによる左ボタン保持なし |
 | 2本指でタップ | 中クリック | 右クリック |
 | 2本指で上下に動かす | 水平スクロール | 縦スクロール |
-| 2本指で左右にスワイプ | - | 左スワイプ：進む／右スワイプ：戻る |
+| 2本指で左右にスワイプ | 左スワイプ：左のタブ／右スワイプ：右のタブ | 左スワイプ：進む／右スワイプ：戻る |
 | 縦スクロール後に指を離す | 慣性処理なし | 慣性スクロール |
 | Layer 1で1本指移動 | - | Snipe（移動量を通常の2/3に抑える） |
 
@@ -33,30 +33,37 @@ westのrevision、ZMK本体、Azoteqドライバーは変更しない。
 右手でカーソルを動かす → 左手の指を離してドロップ、の順で操作する。
 左手の指を動かしてもカーソル座標には影響しない。
 
+左手のタブ移動は、左スワイプで`Ctrl+Shift+Tab`、右スワイプで`Ctrl+Tab`を
+送信する。ブラウザにフォーカスがある状態で使用する。1回のタッチにつき
+最大1回切り替え、再度切り替えるには指を離してからスワイプする。
+
 ## イベント経路
 
 ```text
 左TPS43 → 左input-splitの標準processors → BLE split (reg=0)
-        → 右input-split proxy (reg=0) → 左専用input-listener → 共通HID
+        → 右input-split proxy (reg=0) → 左専用input-listenerのtab swipe → 共通HID
 右TPS43 → 既存の右input-listener → 既存orientation/swipe/inertia/Snipe → 共通HID
 ```
 
-左のprocessor順序は次の通り。変換はすべてBLE転送前に行う。
+左のprocessor順序は次の通り。1〜4はBLE転送前、5は右central側で行う。
 
 | 順序 | Processor | 結果 |
 |---|---|---|
 | 1 | `zip_xy_scaler 0 1` | REL_X/Yを0化 |
-| 2 | `left_hwheel_blocker 0 1` | 元のREL_HWHEELを0化 |
+| 2 | `left_swipe_axis_mapper` | 元のREL_HWHEELをREL_DIALへ変換し、左右スワイプ用に保持 |
 | 3 | `left_wheel_to_hwheel` | REL_WHEELをREL_HWHEELへ変換、値と符号は保持 |
 | 4 | `left_middle_click_mapper` | BTN_1をBTN_2へ変換、DOWN/UPは保持 |
+| 5 | `left_tps43_tab_swipe` | REL_DIALからタブ移動を判定し、この軸のスクロール出力を抑止。REL_HWHEELは水平スクロールとして通過 |
 
 左TPS43の`invert-scroll-y`でWHEELの符号を反転してからHWHEELへ変換する。
 上下スワイプによる水平スクロール方向は、初期のデュアルTPS43設定と逆になる。
+左右スワイプは`invert-scroll-x`で符号を反転する。判定閾値は8、
+左右方向の累積量が上下方向の総移動量の2倍以上の場合にタブを切り替える。
 
 BTN_0は変換しない。左はsingle-tapを有効にせず、press-and-hold、
 two-finger-tap、scrollのみ有効。現在の設定値は`hold-time = <1>`。
-標準scalerはイベントを破棄せず値を0にするため、X/Yと元HWHEELの
-BLE通知件数は減らない。sync情報もそのまま転送される。
+標準scalerはイベントを破棄せず値を0にするため、X/YのBLE通知件数は
+減らない。左右スワイプの値とtouch、sync情報もそのまま転送される。
 
 右の実測補正はXY交換と両軸反転を含む。左は上下操作をドライバーの
 WHEELとして扱うため、右のコントローラー設定からswitch-xyを省き、
@@ -84,8 +91,9 @@ python scripts/check_dual_tps43.py `
 確認対象はピン、RSTのActive HIGH、GPIO/pinctrl競合、gesture設定、
 split reg/device/listener経路、central/peripheral、バッテリー・sleep・Studioの
 有効設定、processor順序。生成されたprocessorの設定値からイベント変換を
-モデル化し、負値を含むX/Y抑止、HWHEEL抑止、WHEEL変換、BTN_1変換、
-BTN_0とsync保持、左保持中の右タップを確認する。
+モデル化し、負値を含むX/Y抑止、スワイプ軸と水平スクロール軸の分離、
+タブ移動のキー設定、WHEEL変換、BTN_1変換、BTN_0とsync保持、
+左保持中の右タップを確認する。
 
 この検証は実際のC処理・BLE通信・TPS43のgesture判定・HIDタイミングを
 実行するものではない。実機動作の合格を意味しない。
@@ -94,6 +102,10 @@ BTN_0とsync保持、左保持中の右タップを確認する。
 左の標準scaler/code mapperもコンパイル成功。上記自動確認はすべてPASS。
 Devicetree/bindingエラーなし。非推奨設定、peripheralのZMK_USB依存、
 右ZMKのcombo/event_manager配列境界についてビルド警告あり。
+
+2026-10-07の確認結果：左手のタブ移動を追加した左右FWのビルド成功。
+スワイプ軸と水平スクロール軸の分離、タブ移動のキー設定を含む自動確認は
+すべてPASS。実機でのスワイプ方向とブラウザの動作確認は未実施。
 
 ## 実機確認（未実施）
 
@@ -105,6 +117,8 @@ Devicetree/bindingエラーなし。非推奨設定、peripheralのZMK_USB依存
 - 左手で保持したまま右手でドラッグでき、左手の指を離すとドロップできる。
   左手の指を少し動かしても座標に影響せず、右手を止めても保持が継続する。
 - 左手で保持中に右手でタップしても、左手の指を離すまで保持が残る。
+- 左手の右スワイプで右のタブ、左スワイプで左のタブへ移動し、1回のタッチで
+  複数回切り替わらない。上下操作の水平スクロールでタブが切り替わらない。
 - 左右のキー入力と両側のバッテリー取得が従来通りに動作する。
 - 左右同時操作を繰り返しても、クラッシュ・ボタン固着・入力欠落がない。
 - 両側のDeep Sleep後にキーで復帰すると、splitが再接続し、両TPS43とキーを操作できる。

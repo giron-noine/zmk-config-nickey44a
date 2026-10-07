@@ -33,11 +33,11 @@
 };
 
 / {
-    left_hwheel_blocker: left_hwheel_blocker {
-        compatible = "zmk,input-processor-scaler";
-        #input-processor-cells = <2>;
+    left_swipe_axis_mapper: left_swipe_axis_mapper {
+        compatible = "zmk,input-processor-code-mapper";
+        #input-processor-cells = <0>;
         type = <INPUT_EV_REL>;
-        codes = <INPUT_REL_HWHEEL>;
+        map = <INPUT_REL_HWHEEL INPUT_REL_DIAL>;
     };
 
     left_wheel_to_hwheel: left_wheel_to_hwheel {
@@ -62,9 +62,9 @@
             compatible = "zmk,input-split";
             reg = <0>;
             device = <&left_tps43>;
-            /* Block native HWHEEL before mapping WHEEL to HWHEEL. */
+            /* Keep swipe motion distinct from the mapped horizontal scroll. */
             input-processors = <&zip_xy_scaler 0 1>,
-                               <&left_hwheel_blocker 0 1>,
+                               <&left_swipe_axis_mapper>,
                                <&left_wheel_to_hwheel>,
                                <&left_middle_click_mapper>;
         };
@@ -92,6 +92,8 @@
         scroll;
         /* Reverse vertical gestures before WHEEL is mapped to HWHEEL. */
         invert-scroll-y;
+        /* Match physical left/right after the controller's invert-x. */
+        invert-scroll-x;
 
         filter-settings = <0x0B>;
         filter-dynamic-bottom = <5>;

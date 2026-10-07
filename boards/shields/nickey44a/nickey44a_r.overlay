@@ -48,6 +48,19 @@
     left_tps43_listener: left_tps43_listener {
         compatible = "zmk,input-listener";
         device = <&left_tps43_split>;
+        input-processors = <&left_tps43_tab_swipe>;
+    };
+
+    left_tps43_tab_swipe: left_tps43_tab_swipe {
+        compatible = "zmk,input-processor-touch-swipe";
+        #input-processor-cells = <0>;
+        hwheel-code = <INPUT_REL_DIAL>;
+        wheel-code = <INPUT_REL_HWHEEL>;
+        touch-code = <INPUT_BTN_TOUCH>;
+        threshold = <8>;
+        axis-ratio = <2>;
+        left-keycode = <LC(LS(TAB))>;
+        right-keycode = <LC(TAB)>;
     };
 
     tps43_orientation: tps43_orientation {

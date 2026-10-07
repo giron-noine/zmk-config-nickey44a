@@ -82,7 +82,8 @@ def main():
                     assert all(v & 0x1ff != 16 for v in prop.to_nums())
     assert enabled(lt, "press-and-hold") and not enabled(lt, "single-tap")
     assert not enabled(lt, "switch-xy")
-    assert lt.props["hold-time"].to_num() == 80
+    assert lt.props["hold-time"].to_num() == 1
+    assert enabled(lt, "invert-scroll-x") and enabled(lt, "invert-scroll-y")
     assert not enabled(rt, "press-and-hold")
     for name in ("single-tap", "two-finger-tap", "scroll", "switch-xy", "invert-x"):
         assert enabled(rt, name), name
@@ -95,7 +96,17 @@ def main():
     assert "device" not in rs.props
     listener = right.label2node["left_tps43_listener"]
     assert listener.props["device"].to_node() is rs
-    assert "input-processors" not in listener.props
+    swipe = right.label2node["left_tps43_tab_swipe"]
+    assert cells_of(listener.props["input-processors"]) == [
+        swipe.props["phandle"].to_num()]
+    assert swipe.props["hwheel-code"].to_num() == c["INPUT_REL_DIAL"]
+    assert swipe.props["wheel-code"].to_num() == c["INPUT_REL_HWHEEL"]
+    assert swipe.props["touch-code"].to_num() == c["INPUT_BTN_TOUCH"]
+    assert swipe.props["threshold"].to_num() == 8
+    assert swipe.props["axis-ratio"].to_num() == 2
+    # Encoded USB keyboard TAB (0x2b) with left Ctrl / left Ctrl+Shift.
+    assert swipe.props["left-keycode"].to_num() == 0x0307002b
+    assert swipe.props["right-keycode"].to_num() == 0x0107002b
 
     chain, cells = [], cells_of(ls.props["input-processors"])
     while cells:
@@ -104,9 +115,9 @@ def main():
         chain.append((node, cells[:count]))
         del cells[:count]
     assert [n.name for n, _ in chain] == [
-        "zip_xy_scaler", "left_hwheel_blocker", "left_wheel_to_hwheel",
+        "zip_xy_scaler", "left_swipe_axis_mapper", "left_wheel_to_hwheel",
         "left_middle_click_mapper"]
-    assert [params for _, params in chain] == [[0, 1], [0, 1], [], []]
+    assert [params for _, params in chain] == [[0, 1], [], [], []]
 
     def process(kind, code, value, sync=True):
         # Model the pinned standard processors using the actual built properties.
@@ -129,8 +140,10 @@ def main():
 
     rel, key = c["INPUT_EV_REL"], c["INPUT_EV_KEY"]
     for value in (-32768, -100, -1, 0, 1, 100, 32767):
-        for code in ("INPUT_REL_X", "INPUT_REL_Y", "INPUT_REL_HWHEEL"):
+        for code in ("INPUT_REL_X", "INPUT_REL_Y"):
             assert process(rel, c[code], value) == (rel, c[code], 0, True)
+        assert process(rel, c["INPUT_REL_HWHEEL"], value) == (
+            rel, c["INPUT_REL_DIAL"], value, True)
         assert process(rel, c["INPUT_REL_WHEEL"], value) == (
             rel, c["INPUT_REL_HWHEEL"], value, True)
     for value in (0, 1):
@@ -150,7 +163,7 @@ def main():
     count -= 1
     assert count == 0
     print("PASS: built pins, gestures, split routing, roles, battery/sleep/Studio config")
-    print("PASS: processor order, signed motion blocking, wheel/button mapping, sync")
+    print("PASS: processor order, signed motion blocking, swipe/scroll separation, tab keys, sync")
     print("PASS: event model preserves left hold through movement and a right tap")
     print("Hardware/BLE/Deep Sleep acceptance tests remain manual.")
 
