@@ -31,8 +31,8 @@ layers:
   - C
   - V
   - B
-  - LEFT WIN
-  - ''
+  - UP ARROW
+  - LEFT
   - N
   - M
   - ','
@@ -41,8 +41,8 @@ layers:
   - '='
   - LCMD
   - {t: SPACE, h: '3'}
-  - LCMD
-  - ''
+  - DOWN ARROW
+  - RIGHT
   - {t: ENTER, h: '2'}
   - {t: RIGHT WIN, h: '1'}
   '1':
