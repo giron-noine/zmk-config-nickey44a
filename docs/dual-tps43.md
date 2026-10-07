@@ -1,8 +1,17 @@
 # Nickey44A-PAD: 左右TPS43
 
-右central／左peripheral。左右ともSDA=P0.09、SCL=P0.10、RDY=P1.10、
-NRST=P0.16、I2Cアドレス=0x74。各MCUに独立したI2Cバスがあるため、
-アドレスは同じでよい。westのrevision、ZMK本体、Azoteqドライバーは変更しない。
+右central／左peripheral。左右とも以下の配線・アドレスを使用する。
+
+| 信号・設定 | 左手のTPS43 | 右手のTPS43 |
+|---|---|---|
+| SDA | P0.09 | P0.09 |
+| SCL | P0.10 | P0.10 |
+| RDY | P1.10 | P1.10 |
+| NRST | P0.16 | P0.16 |
+| I2Cアドレス | `0x74` | `0x74` |
+
+各MCUに独立したI2Cバスがあるため、アドレスは同じでよい。
+westのrevision、ZMK本体、Azoteqドライバーは変更しない。
 
 ## ジェスチャの割り当て
 
