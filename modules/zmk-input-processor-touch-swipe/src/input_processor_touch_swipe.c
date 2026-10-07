@@ -11,6 +11,7 @@
 #include <limits.h>
 #include <drivers/input_processor.h>
 #include <zmk/events/keycode_state_changed.h>
+#include <zmk/keymap.h>
 #include <zephyr/logging/log.h>
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
@@ -22,6 +23,9 @@ struct touch_swipe_config {
     int32_t axis_ratio;
     uint32_t left_keycode;
     uint32_t right_keycode;
+    int32_t override_layer;
+    uint32_t override_left_keycode;
+    uint32_t override_right_keycode;
 };
 
 struct touch_swipe_data {
@@ -88,6 +92,9 @@ static int observe_input(const struct device *dev, struct input_event *event,
             data->swipe_fired = true;
             bool left = data->horizontal_accum < 0;
             uint32_t keycode = left ? cfg->left_keycode : cfg->right_keycode;
+            if (cfg->override_layer >= 0 && zmk_keymap_layer_active(cfg->override_layer)) {
+                keycode = left ? cfg->override_left_keycode : cfg->override_right_keycode;
+            }
             int64_t timestamp = k_uptime_get();
             int press = raise_zmk_keycode_state_changed_from_encoded(keycode, true, timestamp);
             int release = raise_zmk_keycode_state_changed_from_encoded(keycode, false, timestamp);
@@ -104,6 +111,11 @@ static int observe_input(const struct device *dev, struct input_event *event,
 static const struct zmk_input_processor_driver_api api = {.handle_event = observe_input};
 
 #define CREATE_INSTANCE(n)                                                                         \
+    BUILD_ASSERT(DT_INST_PROP(n, override_layer) >= -1 &&                                        \
+                 DT_INST_PROP(n, override_layer) < ZMK_KEYMAP_LAYERS_LEN, "invalid override layer"); \
+    BUILD_ASSERT(DT_INST_PROP(n, override_layer) < 0 ||                                          \
+                 (DT_INST_PROP(n, override_left_keycode) && DT_INST_PROP(n, override_right_keycode)), \
+                 "override layer requires both keycodes");                                     \
     BUILD_ASSERT(DT_INST_PROP(n, threshold) > 0 &&                                                 \
                  DT_INST_PROP(n, threshold) <= INT32_MAX, "threshold must be positive int32");   \
     BUILD_ASSERT(DT_INST_PROP(n, axis_ratio) > 0 &&                                                \
@@ -119,6 +131,9 @@ static const struct zmk_input_processor_driver_api api = {.handle_event = observ
         .axis_ratio = DT_INST_PROP(n, axis_ratio),                                                 \
         .left_keycode = DT_INST_PROP(n, left_keycode),                                             \
         .right_keycode = DT_INST_PROP(n, right_keycode),                                           \
+        .override_layer = DT_INST_PROP(n, override_layer),                                       \
+        .override_left_keycode = DT_INST_PROP(n, override_left_keycode),                         \
+        .override_right_keycode = DT_INST_PROP(n, override_right_keycode),                       \
     };                                                                                            \
     DEVICE_DT_INST_DEFINE(n, NULL, NULL, &data_##n, &config_##n, POST_KERNEL,                       \
                           CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &api);

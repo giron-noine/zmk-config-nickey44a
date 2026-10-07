@@ -1,5 +1,11 @@
 # Touch swipe
 
+Optional `override-layer`, `override-left-keycode`, and `override-right-keycode`
+properties select alternate keycodes while the specified layer ID is active.
+The layer is checked when the swipe threshold is reached. The same touch state
+is retained across layer changes, so changing layers cannot retrigger a swipe
+until the finger is lifted. The default `override-layer = -1` disables this feature.
+
 Local MIT-licensed processor, ordered after orientation and before touch-inertia.
 One instance must serve one input listener. The normal Zephyr input thread
 serializes callbacks; there is no delayed work or shared gesture state.
@@ -27,7 +33,8 @@ unchanged. Snipe still scales only cursor X/Y before the common chain.
 left-keycode/right-keycode are required encoded ZMK keycodes; Nickey44A sets
 C_AC_BACK/C_AC_FORWARD. The same keycode-state events used by &kp produce a
 press then release through ZMK's HID listener. Arbitrary behavior bindings
-are not implemented. No OS-specific shortcut or direct driver changes.
+are not implemented. Tab switching uses Ctrl+Tab/Ctrl+Shift+Tab; the TPS43 driver
+is unchanged.
 
 ## Tuning and hardware validation
 

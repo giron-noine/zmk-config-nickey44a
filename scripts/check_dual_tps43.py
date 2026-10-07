@@ -107,6 +107,12 @@ def main():
     # Physical right swipe produces negative DIAL; encoded TAB with Ctrl / Ctrl+Shift.
     assert swipe.props["left-keycode"].to_num() == 0x0107002b
     assert swipe.props["right-keycode"].to_num() == 0x0307002b
+    right_swipe = right.label2node["tps43_touch_swipe"]
+    assert right_swipe.props["left-keycode"].to_num() == 0x000c0224
+    assert right_swipe.props["right-keycode"].to_num() == 0x000c0225
+    assert right_swipe.props["override-layer"].to_num() == 1
+    assert right_swipe.props["override-left-keycode"].to_num() == 0x0107002b
+    assert right_swipe.props["override-right-keycode"].to_num() == 0x0307002b
 
     chain, cells = [], cells_of(ls.props["input-processors"])
     while cells:

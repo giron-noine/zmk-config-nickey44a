@@ -27,3 +27,15 @@ properties:
     type: int
     required: true
     description: Encoded ZMK keycode tapped on a positive horizontal swipe.
+  override-layer:
+    type: int
+    default: -1
+    description: Layer ID selecting alternate keycodes at swipe recognition; -1 disables.
+  override-left-keycode:
+    type: int
+    default: 0
+    description: Encoded keycode for a negative swipe when override-layer is active.
+  override-right-keycode:
+    type: int
+    default: 0
+    description: Encoded keycode for a positive swipe when override-layer is active.
