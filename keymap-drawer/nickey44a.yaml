@@ -32,17 +32,17 @@ layers:
   - V
   - B
   - LEFT WIN
-  - DELETE
+  - ''
   - N
   - M
   - ','
   - .
   - /
   - '='
-  - LEFT ALT
-  - {t: LEFT WIN, h: '3'}
-  - SPACE
-  - BSPC
+  - {t: LCMD, h: '3'}
+  - {t: SPACE, h: '3'}
+  - LCMD
+  - ''
   - {t: ENTER, h: '2'}
   - {t: RIGHT WIN, h: '1'}
   '1':
@@ -174,8 +174,8 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
   - {type: held}
+  - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - '&mkp LCLK'
