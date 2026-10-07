@@ -59,6 +59,8 @@ westのrevision、ZMK本体、Azoteqドライバーは変更しない。
 上下スワイプによる水平スクロール方向は、初期のデュアルTPS43設定と逆になる。
 左右スワイプは`invert-scroll-x`で符号を反転する。判定閾値は8、
 左右方向の累積量が上下方向の総移動量の2倍以上の場合にタブを切り替える。
+実機では右スワイプが負のREL_DIALに対応するため、processorの
+`left-keycode`に`Ctrl+Tab`、`right-keycode`に`Ctrl+Shift+Tab`を割り当てる。
 
 BTN_0は変換しない。左はsingle-tapを有効にせず、press-and-hold、
 two-finger-tap、scrollのみ有効。現在の設定値は`hold-time = <1>`。

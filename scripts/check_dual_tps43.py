@@ -104,9 +104,9 @@ def main():
     assert swipe.props["touch-code"].to_num() == c["INPUT_BTN_TOUCH"]
     assert swipe.props["threshold"].to_num() == 8
     assert swipe.props["axis-ratio"].to_num() == 2
-    # Encoded USB keyboard TAB (0x2b) with left Ctrl / left Ctrl+Shift.
-    assert swipe.props["left-keycode"].to_num() == 0x0307002b
-    assert swipe.props["right-keycode"].to_num() == 0x0107002b
+    # Physical right swipe produces negative DIAL; encoded TAB with Ctrl / Ctrl+Shift.
+    assert swipe.props["left-keycode"].to_num() == 0x0107002b
+    assert swipe.props["right-keycode"].to_num() == 0x0307002b
 
     chain, cells = [], cells_of(ls.props["input-processors"])
     while cells:

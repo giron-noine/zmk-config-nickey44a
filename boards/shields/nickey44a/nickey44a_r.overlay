@@ -59,8 +59,9 @@
         touch-code = <INPUT_BTN_TOUCH>;
         threshold = <8>;
         axis-ratio = <2>;
-        left-keycode = <LC(LS(TAB))>;
-        right-keycode = <LC(TAB)>;
+        /* Measured left pad: physical right swipe produces negative DIAL. */
+        left-keycode = <LC(TAB)>;
+        right-keycode = <LC(LS(TAB))>;
     };
 
     tps43_orientation: tps43_orientation {
