@@ -26,7 +26,7 @@ layers:
   - ;
   - ''''
   - LSHFT
-  - Z
+  - {t: Z, h: LEFT ALT}
   - X
   - C
   - V
@@ -41,7 +41,7 @@ layers:
   - '='
   - LCMD
   - {t: SPACE, h: '3'}
-  - DOWN ARROW
+  - {t: DOWN ARROW, h: LEFT ALT}
   - RIGHT
   - {t: ENTER, h: '2'}
   - {t: RIGHT WIN, h: '1'}
@@ -142,12 +142,12 @@ layers:
   - F4
   - F5
   - F6
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - F7
+  - F8
+  - F9
+  - F10
+  - F11
+  - F12
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - '&mmv MOVE_UP'
