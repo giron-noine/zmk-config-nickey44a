@@ -28,13 +28,13 @@ uses int64 for magnitude and ratio calculations.
 
 HWHEEL always returns ZMK_INPUT_PROC_STOP, even outside touch. WHEEL, TOUCH,
 cursor and button events pass unchanged. Touch-inertia code and settings are
-unchanged. Snipe still scales only cursor X/Y before the common chain.
+unchanged. Nickey44A currently leaves the optional Snipe layer disabled.
 
 left-keycode/right-keycode are required encoded ZMK keycodes; Nickey44A sets
 C_AC_BACK/C_AC_FORWARD. The same keycode-state events used by &kp produce a
 press then release through ZMK's HID listener. Arbitrary behavior bindings
-are not implemented. Tab switching uses Ctrl+Tab/Ctrl+Shift+Tab; the TPS43 driver
-is unchanged.
+are not implemented. Nickey44A currently leaves the optional override keycodes
+disabled; its left TPS43 has separate tab-swipe handling. The TPS43 driver is unchanged.
 
 ## Tuning and hardware validation
 
@@ -54,6 +54,6 @@ may need release before a horizontal gesture, deliberately.
 
 Check left/right once per touch, same-direction continuation, reversal,
 duplicate down, complete release/re-touch, tap/right-click, single-finger
-cursor/tap/hold, repeated vertical scrolling and inertia, layer-1 Snipe,
+cursor/tap/hold, repeated vertical scrolling and inertia,
 deep sleep/wake, and USB/BLE Consumer reports in the target browser.
 Build success does not establish physical gesture feel or sleep behavior.

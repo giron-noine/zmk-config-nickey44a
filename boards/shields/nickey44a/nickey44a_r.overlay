@@ -82,10 +82,6 @@
         axis-ratio = <2>;
         left-keycode = <C_AC_BACK>;
         right-keycode = <C_AC_FORWARD>;
-        override-layer = <1>;
-        /* Physical right swipe is negative after orientation correction. */
-        override-left-keycode = <LC(TAB)>;
-        override-right-keycode = <LC(LS(TAB))>;
     };
 
     tps43_touch_inertia: tps43_touch_inertia {
@@ -109,12 +105,6 @@
                                              INPUT_TRANSFORM_X_INVERT |
                                              INPUT_TRANSFORM_Y_INVERT)>,
                            <&tps43_touch_swipe>, <&tps43_touch_inertia>;
-
-        snipe_layer {
-            layers = <1>;
-            process-next;
-            input-processors = <&zip_xy_scaler 2 3>;
-        };
     };
 };
 
