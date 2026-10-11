@@ -80,14 +80,15 @@ def main():
                             assert candidate is node and prop.name == "rst-gpios"
                 if prop.name == "psels":
                     assert all(v & 0x1ff != 16 for v in prop.to_nums())
-    assert enabled(lt, "press-and-hold") and not enabled(lt, "single-tap")
+    for node in (lt, rt):
+        for name in ("press-and-hold", "single-tap", "two-finger-tap"):
+            assert not enabled(node, name), name
     assert not enabled(lt, "switch-xy")
-    assert lt.props["hold-time"].to_num() == 1
     assert enabled(lt, "invert-scroll-x") and enabled(lt, "invert-scroll-y")
-    assert not enabled(rt, "press-and-hold")
-    for name in ("single-tap", "two-finger-tap", "scroll", "switch-xy", "invert-x"):
+    for name in ("scroll", "switch-xy", "invert-x"):
         assert enabled(rt, name), name
-    assert enabled(lt, "two-finger-tap") and enabled(lt, "scroll")
+    assert enabled(lt, "scroll")
+    assert rt.props["filter-dynamic-bottom"].to_num() == 3
 
     ls = left.label2node["left_tps43_split"]
     rs = right.label2node["left_tps43_split"]
@@ -157,20 +158,9 @@ def main():
         assert process(key, c["INPUT_BTN_0"], value) == (key, c["INPUT_BTN_0"], value, True)
     assert process(rel, c["INPUT_REL_X"], 25, False)[3] is False
 
-    # Model the shared HID reference count: left hold + right tap + movement.
-    count = 0
-    for value, expected in ((1, 1), (1, 2), (0, 1)):
-        assert process(key, c["INPUT_BTN_0"], value)[2] == value
-        count += 1 if value else -1
-        assert count == expected
-    for _ in range(100):
-        assert process(rel, c["INPUT_REL_X"], 5)[2] == 0
-        assert count == 1  # Right movement sends no button release.
-    count -= 1
-    assert count == 0
     print("PASS: built pins, gestures, split routing, roles, battery/sleep/Studio config")
     print("PASS: processor order, signed motion blocking, swipe/scroll separation, tab keys, sync")
-    print("PASS: event model preserves left hold through movement and a right tap")
+    print("PASS: trackpad tap and hold clicks disabled; right filter value is 3")
     print("Hardware/BLE/Deep Sleep acceptance tests remain manual.")
 
 

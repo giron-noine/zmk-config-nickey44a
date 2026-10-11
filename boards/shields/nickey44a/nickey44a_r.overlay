@@ -133,8 +133,6 @@
         rst-gpios = <&gpio0 16 GPIO_ACTIVE_HIGH>;
         rdy-gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
 
-        single-tap;
-        two-finger-tap;
         scroll;
         /* The listener swaps axes, so driver X controls host vertical scrolling. */
         invert-scroll-y;
@@ -143,7 +141,6 @@
         filter-dynamic-bottom = <3>;
         sensitivity = <100>;
         scroll-sensitivity = <5>;
-        hold-time = <250>;
         enable-power-management;
         /* Controller settings used when the listener's correction was measured. */
         switch-xy;

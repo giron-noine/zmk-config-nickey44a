@@ -87,8 +87,6 @@
         rst-gpios = <&gpio0 16 GPIO_ACTIVE_HIGH>;
         rdy-gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
 
-        press-and-hold;
-        two-finger-tap;
         scroll;
         /* Reverse vertical gestures before WHEEL is mapped to HWHEEL. */
         invert-scroll-y;
@@ -99,7 +97,6 @@
         filter-dynamic-bottom = <5>;
         sensitivity = <100>;
         scroll-sensitivity = <5>;
-        hold-time = <1>;
         enable-power-management;
         /* Keep physical vertical motion on WHEEL: no controller XY swap. */
         invert-x;
