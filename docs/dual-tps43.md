@@ -44,8 +44,8 @@ westのrevision、ZMK本体、Azoteqドライバーは変更しない。
 
 ```text
 左TPS43 → 左input-splitの標準processors → BLE split (reg=0)
-        → 右input-split proxy (reg=0) → 左専用input-listenerのtab swipe → 共通HID
-右TPS43 → 右input-listener → cursor/scroll orientation・inertia → 共通HID
+        → 右input-split proxy (reg=0) → 左専用input-listenerのbutton filter・tab swipe → 共通HID
+右TPS43 → 右input-listenerのbutton filter・cursor/scroll orientation・inertia → 共通HID
 ```
 
 左のprocessor順序は次の通り。1〜4はBLE転送前、5は右central側で行う。
@@ -65,9 +65,11 @@ westのrevision、ZMK本体、Azoteqドライバーは変更しない。
 実機では右スワイプが負のREL_DIALに対応するため、processorの
 `left-keycode`に`Ctrl+Tab`、`right-keycode`に`Ctrl+Shift+Tab`を割り当てる。
 
-BTN_0は変換しない。左右ともsingle-tap、two-finger-tap、press-and-holdを
-無効にし、scrollは有効。左のBTN_1→BTN_2変換は残るが、タップが無効のため
-通常はクリックイベントが発生しない。
+左右ともsingle-tap、two-finger-tap、press-and-holdを設定上無効にし、
+scrollは有効。固定TPS43ドライバーはセンサーからタップ通知が来ると
+設定フラグを再確認せずクリックを送るため、central側の
+`zip_button_behaviors`でBTN_0/BTN_1/BTN_2を`&none`へ送って止める。
+左のBTN_1→BTN_2変換は残るが、変換後のBTN_2も止める。
 標準scalerはイベントを破棄せず値を0にするため、X/YのBLE通知件数は
 減らない。左右スワイプの値とtouch、sync情報もそのまま転送される。
 
@@ -80,7 +82,7 @@ invert-xは維持する。左に追加のorientation processorはない。
 同じ物理向きの実装を前提とした設定であり、左の取り付け向きと実機の
 上下・左右判定は実機で確認する。
 
-右TPS43はタップと長押しクリックを無効にし、縦横スクロール、
+右TPS43のボタンイベントはfilterで止め、縦横スクロール、
 inertia、orientation、感度、電源管理、RST/RDYを維持する。
 低速時の動きに使う右TPS43の`filter-dynamic-bottom`は`3`。
 
@@ -101,7 +103,7 @@ split reg/device/listener経路、central/peripheral、バッテリー・sleep�
 有効設定、processor順序。生成されたprocessorの設定値からイベント変換を
 モデル化し、負値を含むX/Y抑止、スワイプ軸と水平スクロール軸の分離、
 タブ移動のキー設定、WHEEL変換、BTN_1変換、BTN_0とsync保持、
-タップ・長押しクリックの無効設定を確認する。
+タップ・長押しクリックの無効設定と、両listenerのボタン抑止を確認する。
 
 この検証は実際のC処理・BLE通信・TPS43のgesture判定・HIDタイミングを
 実行するものではない。実機動作の合格を意味しない。

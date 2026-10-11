@@ -98,8 +98,14 @@ def main():
     listener = right.label2node["left_tps43_listener"]
     assert listener.props["device"].to_node() is rs
     swipe = right.label2node["left_tps43_tab_swipe"]
+    button_filter = right.label2node["zip_button_behaviors"]
+    none = right.label2node["none"]
+    assert button_filter.props["codes"].to_nums() == [
+        c["INPUT_BTN_0"], c["INPUT_BTN_1"], c["INPUT_BTN_2"]]
+    assert cells_of(button_filter.props["bindings"]) == [
+        none.props["phandle"].to_num()] * 3
     assert cells_of(listener.props["input-processors"]) == [
-        swipe.props["phandle"].to_num()]
+        button_filter.props["phandle"].to_num(), swipe.props["phandle"].to_num()]
     assert swipe.props["hwheel-code"].to_num() == c["INPUT_REL_DIAL"]
     assert swipe.props["wheel-code"].to_num() == c["INPUT_REL_HWHEEL"]
     assert swipe.props["touch-code"].to_num() == c["INPUT_BTN_TOUCH"]
@@ -114,6 +120,7 @@ def main():
     scroll = right.label2node["tps43_scroll_orientation"]
     inertia = right.label2node["tps43_touch_inertia"]
     assert cells_of(right_listener.props["input-processors"]) == [
+        button_filter.props["phandle"].to_num(),
         cursor.props["phandle"].to_num(), 4,  # Y invert: one-finger cursor
         scroll.props["phandle"].to_num(), 2,  # X invert: Mac natural scroll
         inertia.props["phandle"].to_num(),

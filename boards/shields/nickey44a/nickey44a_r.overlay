@@ -48,7 +48,8 @@
     left_tps43_listener: left_tps43_listener {
         compatible = "zmk,input-listener";
         device = <&left_tps43_split>;
-        input-processors = <&left_tps43_tab_swipe>;
+        /* The pinned driver can still report tap buttons after gesture flags are removed. */
+        input-processors = <&zip_button_behaviors>, <&left_tps43_tab_swipe>;
     };
 
     left_tps43_tab_swipe: left_tps43_tab_swipe {
@@ -96,8 +97,9 @@
     tps43_listener: tps43_listener {
         compatible = "zmk,input-listener";
         device = <&tps43>;
-        /* Keep cursor direction; make two-finger scrolling follow Mac natural scrolling. */
-        input-processors = <&tps43_cursor_orientation INPUT_TRANSFORM_Y_INVERT>,
+        /* Drop sensor buttons; keep cursor direction and Mac natural scrolling. */
+        input-processors = <&zip_button_behaviors>,
+                           <&tps43_cursor_orientation INPUT_TRANSFORM_Y_INVERT>,
                            <&tps43_scroll_orientation INPUT_TRANSFORM_X_INVERT>,
                            <&tps43_touch_inertia>;
     };
