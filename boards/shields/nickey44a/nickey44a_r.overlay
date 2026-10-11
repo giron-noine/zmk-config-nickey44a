@@ -64,12 +64,20 @@
         right-keycode = <LC(LS(TAB))>;
     };
 
-    tps43_orientation: tps43_orientation {
+    tps43_cursor_orientation: tps43_cursor_orientation {
         compatible = "zmk,input-processor-transform";
         #input-processor-cells = <1>;
         type = <INPUT_EV_REL>;
-        x-codes = <INPUT_REL_X INPUT_REL_HWHEEL>;
-        y-codes = <INPUT_REL_Y INPUT_REL_WHEEL>;
+        x-codes = <INPUT_REL_X>;
+        y-codes = <INPUT_REL_Y>;
+    };
+
+    tps43_scroll_orientation: tps43_scroll_orientation {
+        compatible = "zmk,input-processor-transform";
+        #input-processor-cells = <1>;
+        type = <INPUT_EV_REL>;
+        x-codes = <INPUT_REL_HWHEEL>;
+        y-codes = <INPUT_REL_WHEEL>;
     };
 
     tps43_touch_swipe: tps43_touch_swipe {
@@ -100,10 +108,11 @@
     tps43_listener: tps43_listener {
         compatible = "zmk,input-listener";
         device = <&tps43>;
-        /* Correct the measured controller output: left -> down, down -> left. */
-        input-processors = <&tps43_orientation (INPUT_TRANSFORM_XY_SWAP |
-                                             INPUT_TRANSFORM_X_INVERT |
-                                             INPUT_TRANSFORM_Y_INVERT)>,
+        /* Installed pad: match one-finger cursor direction; retain scroll mapping. */
+        input-processors = <&tps43_cursor_orientation INPUT_TRANSFORM_Y_INVERT>,
+                           <&tps43_scroll_orientation (INPUT_TRANSFORM_XY_SWAP |
+                                                       INPUT_TRANSFORM_X_INVERT |
+                                                       INPUT_TRANSFORM_Y_INVERT)>,
                            <&tps43_touch_swipe>, <&tps43_touch_inertia>;
     };
 };
