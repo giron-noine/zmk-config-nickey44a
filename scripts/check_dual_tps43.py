@@ -108,12 +108,17 @@ def main():
     # Physical right swipe produces negative DIAL; encoded TAB with Ctrl / Ctrl+Shift.
     assert swipe.props["left-keycode"].to_num() == 0x0107002b
     assert swipe.props["right-keycode"].to_num() == 0x0307002b
-    right_swipe = right.label2node["tps43_touch_swipe"]
-    assert right_swipe.props["left-keycode"].to_num() == 0x000c0224
-    assert right_swipe.props["right-keycode"].to_num() == 0x000c0225
-    for name in ("override-layer", "override-left-keycode", "override-right-keycode"):
-        assert name not in right_swipe.props
-    assert "snipe_layer" not in right.label2node["tps43_listener"].nodes
+    right_listener = right.label2node["tps43_listener"]
+    assert right_listener.props["device"].to_node() is rt
+    cursor = right.label2node["tps43_cursor_orientation"]
+    scroll = right.label2node["tps43_scroll_orientation"]
+    inertia = right.label2node["tps43_touch_inertia"]
+    assert cells_of(right_listener.props["input-processors"]) == [
+        cursor.props["phandle"].to_num(), 4,  # Y invert: one-finger cursor
+        scroll.props["phandle"].to_num(), 2,  # X invert: Mac natural scroll
+        inertia.props["phandle"].to_num(),
+    ]
+    assert "tps43_touch_swipe" not in right.label2node
 
     chain, cells = [], cells_of(ls.props["input-processors"])
     while cells:

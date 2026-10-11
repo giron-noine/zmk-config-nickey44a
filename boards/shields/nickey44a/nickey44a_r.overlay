@@ -80,18 +80,6 @@
         y-codes = <INPUT_REL_WHEEL>;
     };
 
-    tps43_touch_swipe: tps43_touch_swipe {
-        compatible = "zmk,input-processor-touch-swipe";
-        #input-processor-cells = <0>;
-        hwheel-code = <INPUT_REL_HWHEEL>;
-        wheel-code = <INPUT_REL_WHEEL>;
-        touch-code = <INPUT_BTN_TOUCH>;
-        threshold = <8>;
-        axis-ratio = <2>;
-        left-keycode = <C_AC_BACK>;
-        right-keycode = <C_AC_FORWARD>;
-    };
-
     tps43_touch_inertia: tps43_touch_inertia {
         compatible = "zmk,input-processor-touch-inertia";
         #input-processor-cells = <0>;
@@ -108,12 +96,10 @@
     tps43_listener: tps43_listener {
         compatible = "zmk,input-listener";
         device = <&tps43>;
-        /* Installed pad: match one-finger cursor direction; retain scroll mapping. */
+        /* Keep cursor direction; make two-finger scrolling follow Mac natural scrolling. */
         input-processors = <&tps43_cursor_orientation INPUT_TRANSFORM_Y_INVERT>,
-                           <&tps43_scroll_orientation (INPUT_TRANSFORM_XY_SWAP |
-                                                       INPUT_TRANSFORM_X_INVERT |
-                                                       INPUT_TRANSFORM_Y_INVERT)>,
-                           <&tps43_touch_swipe>, <&tps43_touch_inertia>;
+                           <&tps43_scroll_orientation INPUT_TRANSFORM_X_INVERT>,
+                           <&tps43_touch_inertia>;
     };
 };
 
@@ -134,7 +120,7 @@
         rdy-gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;
 
         scroll;
-        /* The listener swaps axes, so driver X controls host vertical scrolling. */
+        /* Driver Y reversal and listener X reversal align scroll with Mac natural scrolling. */
         invert-scroll-y;
 
         filter-settings = <0x0B>;
