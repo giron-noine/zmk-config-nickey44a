@@ -81,6 +81,15 @@
         y-codes = <INPUT_REL_WHEEL>;
     };
 
+    tps43_scroll_scale: tps43_scroll_scale {
+        compatible = "zmk,input-processor-scroll-scale";
+        #input-processor-cells = <0>;
+        wheel-code = <INPUT_REL_WHEEL>;
+        hwheel-code = <INPUT_REL_HWHEEL>;
+        touch-code = <INPUT_BTN_TOUCH>;
+        scale-percent = <5>;
+    };
+
     tps43_touch_inertia: tps43_touch_inertia {
         compatible = "zmk,input-processor-touch-inertia";
         #input-processor-cells = <0>;
@@ -101,6 +110,7 @@
         input-processors = <&zip_button_behaviors>,
                            <&tps43_cursor_orientation INPUT_TRANSFORM_Y_INVERT>,
                            <&tps43_scroll_orientation INPUT_TRANSFORM_X_INVERT>,
+                           <&tps43_scroll_scale>,
                            <&tps43_touch_inertia>;
     };
 };
@@ -128,7 +138,8 @@
         filter-settings = <0x0B>;
         filter-dynamic-bottom = <3>;
         sensitivity = <100>;
-        scroll-sensitivity = <5>;
+        /* Scale after the driver so fractional motion is carried into the next report. */
+        scroll-sensitivity = <100>;
         enable-power-management;
         /* Controller settings used when the listener's correction was measured. */
         switch-xy;

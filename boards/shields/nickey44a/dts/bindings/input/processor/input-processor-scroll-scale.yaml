@@ -1,0 +1,17 @@
+description: Scale wheel input while retaining fractional motion between reports
+compatible: "zmk,input-processor-scroll-scale"
+include: ip_zero_param.yaml
+properties:
+  wheel-code:
+    type: int
+    required: true
+  hwheel-code:
+    type: int
+    required: true
+  touch-code:
+    type: int
+    required: true
+  scale-percent:
+    type: int
+    required: true
+    description: Wheel sensitivity percentage, with fractions carried between reports.
