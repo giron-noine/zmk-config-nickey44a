@@ -87,8 +87,8 @@
         wheel-code = <INPUT_REL_WHEEL>;
         hwheel-code = <INPUT_REL_HWHEEL>;
         touch-code = <INPUT_BTN_TOUCH>;
-        /* At 16 HID wheel counts per notch, 80% keeps the former 5% scroll distance. */
-        scale-percent = <80>;
+        /* Half the previous high-resolution scroll speed. */
+        scale-percent = <40>;
     };
 
     tps43_touch_inertia: tps43_touch_inertia {
@@ -98,9 +98,9 @@
         touch-code = <INPUT_BTN_TOUCH>;
         tick-ms = <10>;
         decay-permille = <920>;
-        /* Velocity samples are now in sixteenth-notches; keep the old physical thresholds. */
-        stop-threshold-q8 = <1536>;
-        launch-threshold-q8 = <6144>;
+        /* Match the halved wheel scale so the same finger flick still launches inertia. */
+        stop-threshold-q8 = <768>;
+        launch-threshold-q8 = <3072>;
         ema-new-permille = <250>;
         cancel-scroll-inertia-on-ctrl;
     };
