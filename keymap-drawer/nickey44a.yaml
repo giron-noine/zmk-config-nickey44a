@@ -151,9 +151,9 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - '&mmv MOVE_UP'
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - LEFT
+  - RIGHT
+  - UP ARROW
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
@@ -165,7 +165,7 @@ layers:
   - '&mmv MOVE_DOWN'
   - '&mmv MOVE_RIGHT'
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
+  - DOWN
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
