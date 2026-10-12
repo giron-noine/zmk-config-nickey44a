@@ -68,10 +68,10 @@
 
         layer_3 {
             bindings = <
-&kp F1  &kp F2          &kp F3          &kp F4           &kp F5  &kp F6                    &kp F7                &kp F8                 &kp F9  &kp F10  &kp F11  &kp F12
-&trans  &trans          &mmv MOVE_UP    &trans           &trans  &trans                    &trans                &trans                 &trans  &trans   &trans   &trans
-&trans  &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_RIGHT  &trans  &trans  &trans    &trans  &trans                &trans                 &trans  &trans   &trans   &trans
-                                                         &trans  &trans  &trans    &trans  &kp LG(LEFT_BRACKET)  &kp LG(RIGHT_BRACKET)
+&kp F1  &kp F2          &kp F3          &kp F4           &kp F5     &kp F6                          &kp F7                &kp F8                 &kp F9  &kp F10  &kp F11  &kp F12
+&trans  &trans          &mmv MOVE_UP    &kp LEFT         &kp RIGHT  &kp UP_ARROW                    &trans                &trans                 &trans  &trans   &trans   &trans
+&trans  &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_RIGHT  &trans     &kp DOWN      &trans    &trans  &trans                &trans                 &trans  &trans   &trans   &trans
+                                                         &trans     &trans        &trans    &trans  &kp LG(LEFT_BRACKET)  &kp LG(RIGHT_BRACKET)
             >;
         };
 
