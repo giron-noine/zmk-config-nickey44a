@@ -31,8 +31,8 @@ layers:
   - C
   - V
   - B
-  - UP ARROW
-  - LEFT
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
   - N
   - M
   - ','
@@ -42,7 +42,7 @@ layers:
   - LCMD
   - {t: SPACE, h: '3'}
   - '&mkp LCLK'
-  - RIGHT
+  - {t: ▽, type: trans}
   - {t: ENTER, h: '2'}
   - {t: RIGHT WIN, h: '1'}
   '1':
@@ -121,17 +121,17 @@ layers:
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
   - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
-  - {t: ▽, type: trans}
   - {t: BT, h: '1'}
-  - {t: BT, h: '0'}
   - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: ▽, type: trans}
+  - {t: BT, h: '0'}
   - {t: ▽, type: trans}
   - {type: held}
   - {t: ▽, type: trans}
